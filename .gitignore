@@ -1,0 +1,39 @@
+# =========== #
+# Unity Files #
+# =========== #
+Temp/*
+Obj/*
+obj/*
+UnityGenerated/*
+Library/*
+Assets/AssetStoreTools*
+
+# ======================= #
+# Script Editing Software #
+# ======================= #
+ExportedObj/*
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+
+# ==================== #
+# Android Studio Files #
+# ==================== #
+OSHook/.idea*
+
+# ======== #
+# OS Files #
+# ======== #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
