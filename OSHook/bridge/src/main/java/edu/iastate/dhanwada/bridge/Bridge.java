@@ -1,4 +1,5 @@
 package edu.iastate.dhanwada.bridge;
+import org.jfugue.midi.*;
 
 /**
  * Created by Srinivas on 10/22/2015.

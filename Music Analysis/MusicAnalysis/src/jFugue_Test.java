@@ -11,7 +11,7 @@ public class jFugue_Test {
 		File midi_source = new File("/Users/IceAuror/G39_MusicMassacre/Music Analysis/ryan_ceiling.mid");
 		Pattern pattern = MidiFileManager.loadPatternFromMidi(midi_source);
 		Player player = new Player();
-		player.play(pattern);
+		//player.play(pattern);
 		System.out.println(pattern);
 		MidiParser parser = new MidiParser();
 		MyParserListener listener = new MyParserListener();
