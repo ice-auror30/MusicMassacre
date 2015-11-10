@@ -1,4 +1,4 @@
-package edu.iastate.dhanwada.bridge;
+package com.example.iceauror.capturemusic;
 
 import android.util.Log;
 
@@ -97,9 +97,9 @@ public abstract class FourierTransform {
                 }
                 else
                 {
-                    lowFreq = (SampleRate/2) / (float)Math.pow(2, octaves - i);
+                    lowFreq = (SampleRate/2) / (float) Math.pow(2, octaves - i);
                 }
-                hiFreq = (SampleRate/2) / (float)Math.pow(2, octaves -i -1);
+                hiFreq = (SampleRate/2) / (float) Math.pow(2, octaves - i - 1);
                 freqStep = (hiFreq - lowFreq) / avgPerOctave;
                 float f =lowFreq;
                 for(int j=0; j< avgPerOctave; j++)
@@ -128,7 +128,7 @@ public abstract class FourierTransform {
      */
      public void linAverages(int numAvg){
         if(numAvg > spectrum.length/2){
-            Log.e(TAG, "Max number of averages should be "+spectrum.length/2);
+            Log.e(TAG, "Max number of averages should be " + spectrum.length / 2);
         }
         else
         {
@@ -180,7 +180,7 @@ public abstract class FourierTransform {
     {
         for (int i =0; i< samples.length; i++)
         {
-            samples[i] *= (0.54f - 0.46f * Math.cos(TWOPI * i /(samples.length -1)));
+            samples[i] *= (0.54f - 0.46f * Math.cos(TWOPI * i / (samples.length - 1)));
         }
     }
     /**
@@ -264,7 +264,7 @@ public abstract class FourierTransform {
             }
             else
             {
-                lowFreq = (SampleRate / 2)/(float)Math.pow(2, octaves - octave);
+                lowFreq = (SampleRate / 2)/(float) Math.pow(2, octaves - octave);
             }
             hiFreq = (SampleRate/2) / (float) Math.pow(2, octaves - octave - 1);
             freqStep = (hiFreq - lowFreq) / avgPerOctave;
@@ -350,7 +350,7 @@ public abstract class FourierTransform {
             Log.e(TAG, "Not enough smaples");
         }
         float[] section = new float[timeSize];
-        System.arraycopy(buffer, startAt, section, 0,section.length);
+        System.arraycopy(buffer, startAt, section, 0, section.length);
         forward(section);
     }
 
