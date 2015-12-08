@@ -8,48 +8,24 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Record"
-        android:id="@+id/record"
-        />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="play"
         android:id="@+id/play"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/stopPlay"
-        android:layout_alignStart="@+id/stopPlay" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Recording"
-        android:id="@+id/stopRecord"
-        android:layout_below="@+id/record"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Play"
-        android:id="@+id/stopPlay"
-        android:layout_alignTop="@+id/stopRecord"
-        android:layout_toRightOf="@+id/stopRecord"
-        android:layout_toEndOf="@+id/stopRecord" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Exit"
-        android:id="@+id/exit"
-        android:layout_below="@+id/stopRecord"
-        android:layout_toRightOf="@+id/record"
-        android:layout_toEndOf="@+id/record" />
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Information about the captured audio"
         android:id="@+id/textView"
-        android:layout_below="@+id/exit"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/play" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textview2"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
 </RelativeLayout>

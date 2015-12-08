@@ -5,32 +5,30 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.audiofx.Visualizer;
 import android.os.Bundle;
-import android.os.Environment;
-//import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import android.os.Handler;
+
+import java.util.ArrayList;
+import java.util.logging.LogRecord;
 
 public class MainActivity extends Activity {
-    //output file
-    String output_file = null;
-    //declare TAG for debugging purposes
-    String TAG = "Recording Test";
-    //instance of the MediaRecorder for audio capture
-    private MediaRecorder recorder;
-    //instance of the MediaPlayer for the recording playback
-    private MediaPlayer player;
+    //Handler Object
+    Handler handler;
+    //Runnable
+    Runnable sampler;
     //UI objects
-    Button record, stop_record, play, stop_play, exit;
-    TextView info;
+    Button play;
+    TextView info, info_FFT;
     //used to get the session id of the media player for visual analysis of the file
-    int session_id; String fileAnalysis ="";
+    String fileAnalysis ="";
     //instance of the visualizer
     Visualizer visualizer;
+    //arraylist
+    //ArrayList <Integer> peakValues = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,87 +37,44 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         //finding the UI objects
         //-->buttons
-        record = (Button) findViewById(R.id.record);//record button
-        stop_record = (Button) findViewById(R.id.stopRecord);//stop record button
         play = (Button) findViewById(R.id.play);//play the recording button
-        stop_play = (Button) findViewById(R.id.stopPlay);//stop playing the recording button
-        exit = (Button)findViewById(R.id.exit);//
         //-->TextView
         info = (TextView)findViewById(R.id.textView);
-        //create an instance of the audio recorder
-        recorder = new MediaRecorder();
-        //set the source of the "audio capture"
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        //set the format of the recording to be saved in
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        //encode the audio file to be played by the media player
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        //setting the name of the recording file
-        output_file = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
-        recorder.setOutputFile(output_file);
-            //recording
-            record.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "recording", Toast.LENGTH_SHORT).show();
-                    try {
-                        recorder.prepare();
-                        recorder.start();
-                    } catch (IOException e) {
-                        Log.e(TAG, "record() failed");
-                    }
-                }
-            });
-
-            //stop recording
-            stop_record.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    recorder.stop();
-                    recorder.release();
-                    recorder = null;
-
-                    Toast.makeText(getApplicationContext(), "Stop recording", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            //play the recording
+        //info_FFt
+        info_FFT=(TextView)findViewById(R.id.textview2);
+            //Analyzing music from background mix
             play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Playing", Toast.LENGTH_SHORT).show();
-                    try {
-                        player = new MediaPlayer();
-                        player.setDataSource(output_file);
-                        player.prepare();
-                        player.start();
-                    } catch (Exception e) {
-                        Log.e(TAG, "play failed");
-                    }
-                    session_id = player.getAudioSessionId();
-                    visualizer = new Visualizer(session_id);
-                    fileAnalysis    +=  "Sampling Rate of the audio:" + visualizer.getSamplingRate()+'\n'
-                                        +"Capture Size: "+visualizer.getCaptureSize()+'\n'
-                                        +"Capture Size Range: "+visualizer.getCaptureSizeRange()+'\n'
-                                        +"Scaling Mode"+visualizer.getScalingMode()+'\n'
-                                        +"Measurement Mode"+visualizer.getMeasurementMode()+'\n';
-                    info.setText(fileAnalysis);
-
+                    Toast.makeText(getApplicationContext(), "Analyzing", Toast.LENGTH_SHORT).show();
+                    visualizer = new Visualizer(0);
+                    visualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_PEAK_RMS);
+                    handler = new Handler();
+                    sampler = new Runnable() {
+                        @Override
+                        public void run() {
+                            Visualizer.MeasurementPeakRms measurementPeakRms = new Visualizer.MeasurementPeakRms();
+                            visualizer.getMeasurementPeakRms(measurementPeakRms);
+                            updateRMS("Sampling Rate of the audio:" + visualizer.getSamplingRate(),
+                                    "Peak Value Mode "+ measurementPeakRms.mPeak+'\n'
+                                    ,"RMS Value "+ measurementPeakRms.mRms +'\n');
+                            handler.postDelayed(sampler, 200);
+                        }
+                    };
+                    visualizer.setEnabled(true);
+                    sampler.run();
                 }
             });
-
-            //stop playing
-            stop_play.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Playing stopped", Toast.LENGTH_SHORT).show();
-                    player.release();
-                    player = null;
-                }
-            });
-
     }
+
+    public void updateRMS(String SamplingRate, String PeakValue, String RMSValue){
+        fileAnalysis    =  SamplingRate+'\n'
+                + PeakValue+'\n'
+                + RMSValue +'\n';
+        //peakValues.add(Integer.parseInt(PeakValue));
+        info.setText(fileAnalysis);
+    }
+
 }
 
 
