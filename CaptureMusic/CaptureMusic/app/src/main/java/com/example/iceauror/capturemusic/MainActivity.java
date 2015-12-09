@@ -1,11 +1,14 @@
 /*
+ * This app captures any audio mix playing through the audio speaker, and analyses the captured
+ * waveform to return the peak and RMS values of the waveform amplitude in mB.
+ */
+/*
  * Link for tutorial to make a plugin: http://www.thegamecontriver.com/2015/04/android-plugin-unity-android-studio.html
  * https://blog.nraboy.com/2014/06/creating-an-android-java-plugin-for-unity3d/
  */
 package com.example.iceauror.capturemusic;
 
 import android.app.Activity;
-import android.content.Context;
 import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,25 +41,6 @@ public class MainActivity extends Activity {
     public ArrayList<Integer> rmsValues = new ArrayList<Integer>();
     //Byte Array to store the FFT
     byte[] fft;
-    //for the plugin in unity
-    private Context context;
-    private static MainActivity instance;
-    //plugin
-    public MainActivity(){
-        this.instance = this;
-    }
-    //plugin
-    public static MainActivity instance(){
-        if(instance == null) {
-            instance = new MainActivity();
-        }
-        return instance;
-    }
-    //plugin
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,23 +71,12 @@ public class MainActivity extends Activity {
                     public void run() {
                         Visualizer.MeasurementPeakRms measurementPeakRms = new Visualizer.MeasurementPeakRms();
                         visualizer.getMeasurementPeakRms(measurementPeakRms);
-                        updateRMS("Sampling Rate of the audio:" + visualizer.getSamplingRate(),
+                        updateValues("Sampling Rate of the audio:" + visualizer.getSamplingRate(),
                                 "Peak Value Mode " + measurementPeakRms.mPeak + '\n'
                                 , "RMS Value " + measurementPeakRms.mRms + '\n');
                         peakValues.add(measurementPeakRms.mPeak);
                         rmsValues.add(measurementPeakRms.mRms);
                         Log.i(TAG, "" + visualizer.getCaptureSizeRange()[0] + " " + visualizer.getCaptureSizeRange()[1]);
-                        //visualizer.setCaptureSize(visualizer.getCaptureSizeRange()[0]);
-                            /*visualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
-                                @Override
-                                public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
-
-                                }
-                                @Override
-                                public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
-
-                                }
-                            },visualizer.getCaptureSize(), true, false);*/
                         handler.postDelayed(sampler, 1000);//basically used as a timer that will update the values of peak and rms every "1000" mS.
                     }
                 };
@@ -112,17 +85,10 @@ public class MainActivity extends Activity {
             }
         });
     }
-    public void updateRMS(String SamplingRate, String PeakValue, String RMSValue){
-       /* String fft_byte = "";
-        for(int i= 0; i< fft.length; ++i)
-        {
-            fft_byte += (char)fft[i];
-        }*/
+    public void updateValues(String SamplingRate, String PeakValue, String RMSValue){
         fileAnalysis    =  SamplingRate+'\n'
                 + PeakValue+'\n'
                 + RMSValue +'\n';
-                //+ fft_byte + '\n';
-        //peakValues.add(Integer.parseInt(PeakValue));
         info.setText(fileAnalysis);
     }
     public ArrayList<Integer> getRMS()

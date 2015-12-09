@@ -11,11 +11,10 @@ import android.content.Context;
 import android.media.audiofx.Visualizer;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 public class SoundAnalysis {
-    //String for Logging purpose
-    String TAG;
     //Handler Object
     Handler handler;
     //Runnable
@@ -29,10 +28,28 @@ public class SoundAnalysis {
     //arraylist to store the rms values
     public ArrayList<Integer> rmsValues = new ArrayList<Integer>();
     //for the plugin in unity
-    private Context context;
+    public Context context;
+    //for the plugin
+    private static SoundAnalysis instance;
+    //plugin
+    public SoundAnalysis(){
+        this.instance = this;
+    }
+    //plugin
+    public static SoundAnalysis instance() {
+        if(instance == null) {
+            instance = new SoundAnalysis();
+        }
+        return instance;
+    }
+    //plugin
+    public void setContext(Context context) {
+        this.context = context;
+    }
     //function will do the calculations
     public void analyze(){
                 visualizer = new Visualizer(0);
+                visualizer.setEnabled(true);
                 visualizer.setMeasurementMode(Visualizer.MEASUREMENT_MODE_PEAK_RMS);
                 handler = new Handler();
                 sampler = new Runnable() {
@@ -40,24 +57,13 @@ public class SoundAnalysis {
                     public void run() {
                         Visualizer.MeasurementPeakRms measurementPeakRms = new Visualizer.MeasurementPeakRms();
                         visualizer.getMeasurementPeakRms(measurementPeakRms);
-                        updateRMS("Sampling Rate of the audio:" + visualizer.getSamplingRate(),
-                                "Peak Value Mode " + measurementPeakRms.mPeak + '\n'
-                                , "RMS Value " + measurementPeakRms.mRms + '\n');
                         peakValues.add(measurementPeakRms.mPeak);
                         rmsValues.add(measurementPeakRms.mRms);
-                        Log.i(TAG, "" + visualizer.getCaptureSizeRange()[0] + " " + visualizer.getCaptureSizeRange()[1]);
                         handler.postDelayed(sampler, 1000);//basically used as a timer that will update the values of peak and rms every "1000" mS.
                     }
                 };
-                visualizer.setEnabled(true);
                 sampler.run();
             }
-    public void updateRMS(String SamplingRate, String PeakValue, String RMSValue){
-        fileAnalysis    =  SamplingRate+'\n'
-                + PeakValue+'\n'
-                + RMSValue +'\n';
-        //+ fft_byte + '\n';
-    }
     public ArrayList<Integer> getRMS()
     {
         return rmsValues;
@@ -65,6 +71,9 @@ public class SoundAnalysis {
     public ArrayList<Integer> getPeak()
     {
         return peakValues;
+    }
+    public int test(){
+        return rmsValues.get(0);
     }
 }
 

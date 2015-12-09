@@ -1,9 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 19
     buildToolsVersion "23.0.1"
-
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java/'
+            }
+        }
+    }
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 23
@@ -19,8 +25,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.0.1'
+    compile files('libs/classes.jar')
+}
+//task to delete the old jar
+task deleteOldJar(type: Delete) {
+    delete 'release/AndroidPlugin.jar'
 }
 //task to export contents as jar
 task exportJar(type: Copy) {
@@ -30,3 +41,5 @@ task exportJar(type: Copy) {
     ///rename
     rename('classes.jar', 'AndroidPlugin.jar')
 }
+
+exportJar.dependsOn(deleteOldJar, build)
