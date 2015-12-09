@@ -10,33 +10,11 @@ public class SoundAnalysisPlugin : MonoBehaviour {
 	public Text testText;
 	// Use this for initialization
 	void Start () {
-		if (SoundAnalysis == null) {
-			using (AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
-				activityContext = activityClass.GetStatic<AndroidJavaObject> ("currentActivity");
-			}
-		
-			using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.iceauror.soundanalysis")) {
-				if (pluginClass != null) {
-					SoundAnalysis = pluginClass.CallStatic<AndroidJavaObject> ("instance");
-					SoundAnalysis.Call ("setContext", activityContext);
-					activityContext.Call ("runOnUiThread", new AndroidJavaRunnable (() => {
-						SoundAnalysis.Call ("analyze");
-						test = SoundAnalysis.Call<int>("test");
-						//ArrayList peak = new ArrayList ();
-						//peak = SoundAnalysis.Call ("getPeak");
-						//ArrayList RMS = new ArrayList ();
-						//RMS = SoundAnalysis.Call ("getRMS");
-					}));
-				}
-			}
-		}
-		/*AndroidJavaClass unity = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
-		AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject> ("currentActivity");
-		currentActivity.Call("analyze");
-		test = currentActivity.Call<int>("test");*/
+		Debug.Log ("RMS" + OSHokBridge.returnRMS ());
+		Debug.Log ("Test" + OSHokBridge.returnTestValue ());
 	}
 
 	void Update() {
-		testText.text="Teftftfst"+ test;	
+		//testText.text="Teftftfst"+ test;	
 	}
 }
